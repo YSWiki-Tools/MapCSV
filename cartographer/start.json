@@ -1,0 +1,37 @@
+{
+    "mapImage": "\u041a\u0430\u0440\u0442\u0430 Akademi (1980).png",
+    "pageCategories": [
+        "\u041b\u043e\u043a\u0430\u0446\u0438\u0438",
+        "\u0420\u0435\u0436\u0438\u043c_1980",
+        "\u041d\u0435\u0434\u0435\u043b\u0438_(1980)"
+    ],
+    "defaultSort": "",
+    "description": "\u0418\u043d\u0442\u0435\u0440\u0430\u043a\u0442\u0438\u0432\u043d\u0430\u044f \u043a\u0430\u0440\u0442\u0430 Akademi.",
+    "coordinateOrder": "xy",
+    "mapBounds": [
+        [
+            0,
+            0
+        ],
+        [
+            9208,
+            6208
+        ]
+    ],
+    "origin": "bottom-left",
+    "useMarkerClustering": false,
+    "categories": [
+        {
+            "id": "5",
+            "listId": 1,
+            "name": "\u041f\u043e\u0441\u0435\u0449\u0435\u043d\u0438\u044f",
+            "color": "#fa8700",
+            "symbol": "",
+            "symbolColor": "",
+            "icon": "\u0424\u0430\u0439\u043b:\u041f\u043e\u0441\u0435\u0449\u0435\u043d\u0438\u044f \u043b\u043e\u043a\u0430\u0446\u0438\u0439 (\u0438\u043a\u043e\u043d\u043a\u0430).png"
+        }
+    ],
+    "markers": [
+
+    ]
+}
