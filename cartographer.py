@@ -55,6 +55,8 @@ with (open("cartographer_in&out/output.json", "w") as output,
 			print(f'Внимание, указанная вами локация "{place}" отсутствует в списке. Убедитесь, что вы не допустили опечатку.\nСписок локаций находится в файле locations.json')
 			start["markers"][id]["position"] = (6680, 5308)
 		start["markers"][id]["popup"]["description"] = "\n".join(chain(*sorted([[time, *people] for time, people in markers[place].items()], key=time_sortkey)))
+		if len(start["markers"][id]["popup"]["description"]) > 300:
+			print(f'Внимание, длина описания маркера с id {id} оказалась больше 300 символов.\nВы можете попробовать объединить временные отметки так, чтобы имя ученика/группы упоминалось в данном маркере лишь единожды.')
 		id += 1
 	json.dump(start, output, indent=4)
 input("Готово.")
