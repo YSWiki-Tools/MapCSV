@@ -50,7 +50,11 @@ with (open("cartographer_in&out/output.json", "w") as output,
 		start["markers"][id]["id"] = id
 		start["markers"][id]["popup"]["title"] = "Посещения"
 		if place in locations.keys():
-			start["markers"][id]["position"] = average_point(*locations[place])
+			if place[:7] == "Патруль":
+				start["markers"][id]["CategoryId"] = 1
+				start["markers"][id]["position"] = locations[place]
+			else:
+				start["markers"][id]["position"] = average_point(*locations[place])
 		else:
 			print(f'Внимание, указанная вами локация "{place}" отсутствует в списке. Убедитесь, что вы не допустили опечатку.\nСписок локаций находится в файле locations.json')
 			start["markers"][id]["position"] = (6680, 5308)
