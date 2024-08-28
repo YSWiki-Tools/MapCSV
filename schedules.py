@@ -1,11 +1,11 @@
 import csv
 import json
-import itertools as irt
+from itertools import chain
 
 
 def is_in_rectangle(pos:tuple[float, float],
 					selector1:tuple[float, float],
-		    		selector2:tuple[float, float]) -> bool: # type: ignore
+					selector2:tuple[float, float]) -> bool:
 	a = selector1[0] > selector2[0]
 	b = selector1[1] > selector2[1]
 	match a, b:
@@ -25,8 +25,7 @@ def location_at(pos:tuple[float, float]) -> str:
 		for place, boundaries in locations.items():
 			if is_in_rectangle(pos, *boundaries):
 				return place
-			else:
-				return f"({pos[0]}, {pos[1]})"
+		return f"({pos[0]}, {pos[1]})"
 	
 
 with (open("schedules_in&out/output.csv", "w", encoding="utf-8") as output_file,
@@ -60,7 +59,7 @@ with (open("schedules_in&out/output.csv", "w", encoding="utf-8") as output_file,
 				timeframe = i
 				places[location][timeframe] = []
 
-	students = set(irt.chain(*[places[place][time] for place in places.keys() for time in places[place].keys()]))
+	students = set(chain(*[places[place][time] for place in places.keys() for time in places[place].keys()]))
 	visits = {student:list() for student in students}
 	for student in students:
 		for place in places.keys():
