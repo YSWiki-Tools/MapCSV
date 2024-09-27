@@ -23,7 +23,9 @@ def location_at(pos:tuple[float, float]) -> str:
 	with open("locations.json", encoding="utf-8") as locations_file:
 		locations = json.load(locations_file)
 		for place, boundaries in locations.items():
-			if is_in_rectangle(pos, *boundaries):
+			if type(boundaries[0]) == int: 
+				continue
+			elif is_in_rectangle(pos, *boundaries):
 				return place
 		return f"({pos[0]}, {pos[1]})"
 	
@@ -48,6 +50,8 @@ with (open("schedules_in&out/output.csv", "w", encoding="utf-8") as output_file,
 		description = marker["popup"]["description"].strip("\n").split("\n")
 		timeframe = "" 
 		for i in description:
+			if not i:
+				continue
 			if i[0] == "*":
 				i = i[1:].strip()
 				if i in groups["210928X0"[is_1980_mode::2]].keys():
