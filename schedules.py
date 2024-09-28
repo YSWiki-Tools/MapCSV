@@ -3,6 +3,13 @@ import json
 from itertools import chain
 
 
+def time_sortkey(a: list[str, list]) -> int:
+	score = int(a[0][:4].replace(":", ""))  # "7:05 AM" → 705
+	if a[0][-2] == "P":
+		score += 1000
+	return score
+
+
 def is_in_rectangle(pos:tuple[float, float],
 					selector1:tuple[float, float],
 					selector2:tuple[float, float]) -> bool:
@@ -19,14 +26,17 @@ def is_in_rectangle(pos:tuple[float, float],
 			return selector1[0] < pos[0] < selector2[0] and selector1[1] < pos[1] < selector2[1]
 
 
-def location_at(pos:tuple[float, float]) -> str:
+def location_at(pos:tuple[float, float], patrol:bool) -> str:
 	with open("locations.json", encoding="utf-8") as locations_file:
 		locations = json.load(locations_file)
 		for place, boundaries in locations.items():
-			if type(boundaries[0]) == int: 
-				continue
-			elif is_in_rectangle(pos, *boundaries):
-				return place
+			if patrol: 
+				if place[:7] == "Патруль" and is_in_rectangle(pos, *boundaries):
+					return place
+			else:
+				if is_in_rectangle(pos, *boundaries):
+					return place
+		print(f"({pos[0]}, {pos[1]})")
 		return f"({pos[0]}, {pos[1]})"
 	
 
@@ -41,27 +51,29 @@ with (open("schedules_in&out/output.csv", "w", encoding="utf-8") as output_file,
 
 	places = {}
 	for marker in markers:
-		location = location_at(marker["position"])
+		location = location_at(marker["position"], marker["categoryId"] == "1")
 		try:
 			if not places[location]:
 				places[location] = {}
 		except KeyError:
 			places[location] = {}
 		description = marker["popup"]["description"].strip("\n").split("\n")
-		timeframe = "" 
+		timeframes = []
 		for i in description:
 			if not i:
 				continue
 			if i[0] == "*":
 				i = i[1:].strip()
-				if i in groups["210928X0"[is_1980_mode::2]].keys():
-					for member in groups["210928X0"[is_1980_mode::2]][i]: 
-						places[location][timeframe].append(member)
-				else:
-					places[location][timeframe].append(i)
+				for timeframe in timeframes:
+					if i in groups["210928X0"[is_1980_mode::2]].keys():
+						for member in groups["210928X0"[is_1980_mode::2]][i]: 
+							places[location][timeframe].append(member)
+					else:
+						places[location][timeframe].append(i)
 			else:
-				timeframe = i
-				places[location][timeframe] = []
+				timeframes = i.split(", ")
+				for timeframe in timeframes:
+					places[location][timeframe] = []
 
 	students = set(chain(*[places[place][time] for place in places.keys() for time in places[place].keys()]))
 	visits = {student:list() for student in students}
@@ -70,6 +82,7 @@ with (open("schedules_in&out/output.csv", "w", encoding="utf-8") as output_file,
 			for time in places[place].keys():
 				if student in places[place][time]:
 					visits[student].append((time, place))
+		visits[student].sort(key=time_sortkey)
 
 	maxsites = max(map(len, visits.values()))
 	output.writerow(["Имя и фамилия", "Имя", "Местоимение", *list(map(lambda x: " ".join(x), zip(["Время", "Место", "Занятие"] * maxsites, map(str, sorted(list(range(1, maxsites+1)) * 3)))))])
