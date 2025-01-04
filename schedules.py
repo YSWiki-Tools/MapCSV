@@ -31,7 +31,7 @@ def location_at(pos:tuple[float, float], patrol:bool) -> str:
 		locations = json.load(locations_file)
 		for place, boundaries in locations.items():
 			if patrol: 
-				if place[:7] == "Патруль" and is_in_rectangle(pos, *boundaries):
+				if place[:6] == "Patrol" and is_in_rectangle(pos, *boundaries):
 					return place
 			else:
 				if is_in_rectangle(pos, *boundaries):
@@ -85,7 +85,7 @@ with (open("schedules_in&out/output.csv", "w", encoding="utf-8") as output_file,
 		visits[student].sort(key=time_sortkey)
 
 	maxsites = max(map(len, visits.values()))
-	output.writerow(["Имя и фамилия", "Имя", "Местоимение", *list(map(lambda x: " ".join(x), zip(["Время", "Место", "Занятие"] * maxsites, map(str, sorted(list(range(1, maxsites+1)) * 3)))))])
+	output.writerow(["Full Name", "Name", "Pronoun", *list(map(lambda x: " ".join(x), zip(["Time", "Place", "Activity"] * maxsites, map(str, sorted(list(range(1, maxsites+1)) * 3)))))])
 	lines = []
 	for name, sites in visits.items():
 		line = [None] * (3 + 3*maxsites)

@@ -50,21 +50,21 @@ with (open("cartographer_in&out/output.json", "w") as output,
 	for place in places:
 		start["markers"].append(deepcopy(pattern))
 		start["markers"][id]["id"] = id
-		start["markers"][id]["popup"]["title"] = "Посещения"
+		start["markers"][id]["popup"]["title"] = "Visits"
 
 		if place in locations.keys():
 			
 			start["markers"][id]["position"] = average_point(*locations[place])
 		else:
-			print(f'Внимание, указанная вами локация "{place}" отсутствует в списке. Убедитесь, что вы не допустили опечатку.\nСписок локаций находится в файле locations.json')
+			print(f'Warning, the location "{place}" is not present in the locations\' list. Make sure you have not mistaken.\nYou can find the list of locations in the file locations.json')
 			start["markers"][id]["position"] = (6680, 5308)
 
 		start["markers"][id]["popup"]["description"] = "\n".join(chain(*sorted([[time, *people] for time, people in markers[place].items()], key=time_sortkey)))
 
 		if len(start["markers"][id]["popup"]["description"]) > 300:
-			print(f'Внимание, длина описания маркера с id {id} оказалась больше 300 символов.\nВы можете попробовать объединить временные отметки так, чтобы имя ученика/группы упоминалось в данном маркере лишь единожды.')
+			print(f'Warning, the description of the marker with id {id} is longer than 300 characters.\nYou may try to combine the timestamps so that the name of the student/group is mentioned only once in this marker.')
 
 		id += 1
 
 	json.dump(start, output, indent=4)
-input("Готово.")
+input("Done.")
