@@ -1,8 +1,14 @@
 import csv
 import json
+import os
 from itertools import chain
 from copy import deepcopy
 
+LANG = None
+if "language.ru" in os.listdir():
+	LANG = "ru"
+elif "language.en" in os.listdir():
+	LANG = "en"
 
 def time_sortkey(a: list[str, list]) -> int:
 	score = int(a[0][:4].replace(":", ""))  # "7:05 AM" → 705
@@ -18,7 +24,7 @@ def average_point(a: tuple[float, float], b: tuple[float, float]):
 start = None
 markers = None
 pattern = None
-with (open("cartographer_in&out/start.json") as start_file,
+with (open(f"locales/start_{LANG}.json") as start_file,
 	  open("cartographer_in&out/markers.csv", encoding='utf-8') as markers_file,
 	  open("cartographer_in&out/pattern.json") as pattern_file):
 	start = json.load(start_file)
@@ -42,27 +48,29 @@ with (open("cartographer_in&out/start.json") as start_file,
 # }
 
 with (open("cartographer_in&out/output.json", "w") as output,
-	  open("locations.json", encoding="utf-8") as locations_file):
+	  open("locations.json", encoding="utf-8") as locations_file,
+	  open(f"cartographer_{LANG}.json") as t_file):
 	
+	t = json.load(t_file)
 	locations = json.load(locations_file)
 	id = 0
 
 	for place in places:
 		start["markers"].append(deepcopy(pattern))
 		start["markers"][id]["id"] = id
-		start["markers"][id]["popup"]["title"] = "Visits"
+		start["markers"][id]["popup"]["title"] = t["visits"]
 
 		if place in locations.keys():
 			
 			start["markers"][id]["position"] = average_point(*locations[place])
 		else:
-			print(f'Warning, the location "{place}" is not present in the locations\' list. Make sure you have not mistaken.\nYou can find the list of locations in the file locations.json')
+			print(t["location_not_present"].format(place=place))
 			start["markers"][id]["position"] = (6680, 5308)
 
 		start["markers"][id]["popup"]["description"] = "\n".join(chain(*sorted([[time, *people] for time, people in markers[place].items()], key=time_sortkey)))
 
 		if len(start["markers"][id]["popup"]["description"]) > 300:
-			print(f'Warning, the description of the marker with id {id} is longer than 300 characters.\nYou may try to combine the timestamps so that the name of the student/group is mentioned only once in this marker.')
+			print(t["description_too_long"].format(id=id))
 
 		id += 1
 
