@@ -1,5 +1,6 @@
 {
     "visits": "Visits",
     "location_not_present": "Warning, the location '{place}' is not present in the locations' list. Make sure you have not mistaken.\nYou can find the list of locations in the file locations.json",
-    "description_too_long": "Warning, the description of the marker with id {id} is longer than 300 characters.\nYou may try to combine the timestamps so that the name of the student/group is mentioned only once in this marker."
+    "description_too_long": "Warning, the description of the marker with id {id} is longer than 300 characters.\nYou may try to combine the timestamps so that the name of the student/group is mentioned only once in this marker.",
+    "done": "Done."
 }

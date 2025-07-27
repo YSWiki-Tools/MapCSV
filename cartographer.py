@@ -22,12 +22,15 @@ options.read('options.ini')
 start = None
 markers = None
 pattern = None
-with (open(f"locales/start_{options["MAIN"]["language"]}.json") as start_file,
-	  open("cartographer_in&out/markers.csv", encoding='utf-8') as markers_file,
-	  open("cartographer_in&out/pattern.json") as pattern_file):
+t = None
+with (open(f"locales/start_{options["MAIN"]["language"]}.json", "r", encoding='utf-8') as start_file,
+	  open("cartographer_in&out/markers.csv", "r", encoding='utf-8') as markers_file,
+	  open("cartographer_in&out/pattern.json") as pattern_file,
+	  open(f"locales/cartographer_{options["MAIN"]["language"]}.json", "r", encoding="utf-8") as t_file):
 	start = json.load(start_file)
 	markers = list(csv.reader(markers_file))
 	pattern = json.load(pattern_file)
+	t = json.load(t_file)
 
 	places = {i[2] for i in markers}
 	markers = {place: list(filter(lambda x: x[2] == place, markers)) for place in places}
@@ -46,10 +49,7 @@ with (open(f"locales/start_{options["MAIN"]["language"]}.json") as start_file,
 # }
 
 with (open("cartographer_in&out/output.json", "w") as output,
-	  open("locations.json", "r", encoding="utf-8") as locations_file,
-	  open(f"cartographer_{options["MAIN"]["language"]}.json", "r", encoding="utf-8") as t_file):
-	
-	t = json.load(t_file)
+	  open(f"locales/locations_{options["MAIN"]["language"]}.json", "r", encoding="utf-8") as locations_file):
 	locations = json.load(locations_file)
 	id = 0
 
@@ -59,7 +59,6 @@ with (open("cartographer_in&out/output.json", "w") as output,
 		start["markers"][id]["popup"]["title"] = t["visits"]
 
 		if place in locations.keys():
-			
 			start["markers"][id]["position"] = average_point(*locations[place])
 		else:
 			print(t["location_not_present"].format(place=place))
