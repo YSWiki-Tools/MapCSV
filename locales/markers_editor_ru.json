@@ -1,0 +1,17 @@
+{
+    "error": "Ошибка",
+    "enter_correct_timestamp": "Введите корректное время от 07:00 AM до 06:00 PM.",
+    "name_not_found": "Имя не найдено в списке.",
+    "place_not_found": "Место не найдено в списке.",
+    "recorded": "Записано: {formatted_time}, {name_input}, {place_input}",
+    "no_data_to_undo": "Нет данных для отмены.",
+    "undone_csv_empty": "Отменено. Сейчас таблица пуста.",
+    "undone_last_entry": "Отменено. Сейчас последняя запись: {lines}",
+    "markers_editor": "Редактор маркеров",
+    "timestamp": "Время:",
+    "name": "Имя:",
+    "place": "Место:",
+    "submit": "Записать",
+    "undo": "Отменить",
+    "logs": "Журнал:"
+}

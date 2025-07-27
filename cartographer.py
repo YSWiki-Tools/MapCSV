@@ -1,14 +1,9 @@
 import csv
 import json
-import os
+import configparser
 from itertools import chain
 from copy import deepcopy
 
-LANG = None
-if "language.ru" in os.listdir():
-	LANG = "ru"
-elif "language.en" in os.listdir():
-	LANG = "en"
 
 def time_sortkey(a: list[str, list]) -> int:
 	score = int(a[0][:4].replace(":", ""))  # "7:05 AM" → 705
@@ -21,10 +16,13 @@ def average_point(a: tuple[float, float], b: tuple[float, float]):
 	return (a[0]+b[0]) // 2, (a[1]+b[1]) // 2
 
 
+options = configparser.ConfigParser()
+options.read('options.ini')
+
 start = None
 markers = None
 pattern = None
-with (open(f"locales/start_{LANG}.json") as start_file,
+with (open(f"locales/start_{options["MAIN"]["language"]}.json") as start_file,
 	  open("cartographer_in&out/markers.csv", encoding='utf-8') as markers_file,
 	  open("cartographer_in&out/pattern.json") as pattern_file):
 	start = json.load(start_file)
@@ -48,8 +46,8 @@ with (open(f"locales/start_{LANG}.json") as start_file,
 # }
 
 with (open("cartographer_in&out/output.json", "w") as output,
-	  open("locations.json", encoding="utf-8") as locations_file,
-	  open(f"cartographer_{LANG}.json") as t_file):
+	  open("locations.json", "r", encoding="utf-8") as locations_file,
+	  open(f"cartographer_{options["MAIN"]["language"]}.json", "r", encoding="utf-8") as t_file):
 	
 	t = json.load(t_file)
 	locations = json.load(locations_file)

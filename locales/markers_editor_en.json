@@ -1,0 +1,17 @@
+{
+    "error": "Error",
+    "enter_correct_timestamp": "Enter a valid time between 07:00 AM and 06:00 PM.",
+    "name_not_found": "Name not found in the list.",
+    "place_not_found": "Place not found in the list.",
+    "recorded": "Recorded: {formatted_time}, {name_input}, {place_input}",
+    "no_data_to_undo": "No data to undo.",
+    "undone_csv_empty": "Undone. The table is now empty.",
+    "undone_last_entry": "Undone. Current last entry: {lines}",
+    "markers_editor": "Markers Editor",
+    "timestamp": "Time:",
+    "name": "Name:",
+    "place": "Place:",
+    "submit": "Submit",
+    "undo": "Undo",
+    "logs": "Logs:"
+}
