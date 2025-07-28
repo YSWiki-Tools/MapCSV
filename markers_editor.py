@@ -7,6 +7,19 @@ import configparser
 from datetime import datetime, time
 
 
+def update_period_label(*args):
+    try:
+        hour = int(hour_entry.get())
+        if 1 <= hour <= 6 or hour == 12:
+            period_label.config(text="PM")
+        elif 7 <= hour <= 11:
+            period_label.config(text="AM")
+        else:
+            period_label.config(text="")  # Некорректный ввод
+    except ValueError:
+        period_label.config(text="")  # Если не число
+
+
 def extract_unique_strings(obj, seen=None):
     if seen is None:
         seen = set()
@@ -63,7 +76,7 @@ def validate_and_format_time(hour_str, minute_str, period):
 def submit_data():
     hour = hour_entry.get()
     minute = minute_entry.get()
-    period = period_combobox.get()
+    period = period_label.cget("text")
     name_input = name_combobox.get()
     place_input = place_combobox.get()
 
@@ -80,14 +93,13 @@ def submit_data():
         messagebox.showerror(t["error"], t["place_not_found"])
         return
 
-    with open("cartographer_in&out\markers.csv", "a", encoding='utf-8') as file:
+    with open("cartographer_in&out\markers.csv", "a", newline="", encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerow([formatted_time, name_input, place_input])
 
     log_entry(t["recorded"].format(formatted_time=formatted_time, name_input=name_input, place_input=place_input))
     hour_entry.delete(0, tk.END)
     minute_entry.delete(0, tk.END)
-    period_combobox.set('')
     name_combobox.set('')
     place_combobox.set('')
 
@@ -151,7 +163,9 @@ root.title(t["markers_editor"])
 ttk.Label(root, text=t["timestamp"]).grid(row=0, column=0, padx=5, pady=5, sticky='e')
 
 # Часы
-hour_entry = ttk.Entry(root, width=5)
+hour_var = tk.StringVar()
+hour_var.trace_add("write", update_period_label)
+hour_entry = ttk.Entry(root, width=5, textvariable=hour_var)
 hour_entry.grid(row=0, column=1, pady=5, sticky='w')
 
 # Двоеточие
@@ -162,8 +176,8 @@ minute_entry = ttk.Entry(root, width=5)
 minute_entry.grid(row=0, column=3, pady=5, sticky='w')
 
 # AM/PM
-period_combobox = ttk.Combobox(root, values=["AM", "PM"], width=5, state='readonly')
-period_combobox.grid(row=0, column=4, pady=5, sticky='w')
+period_label = ttk.Label(root, text="AM")
+period_label.grid(row=0, column=4, pady=5, sticky='w')
 
 # Имя с автодополнением
 ttk.Label(root, text=t["name"]).grid(row=1, column=0, padx=5, pady=5, sticky='e')
